@@ -8,10 +8,11 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './payment-detail.component.html',
   styles: []
 })
-
 export class PaymentDetailComponent implements OnInit {
-
-  constructor(private service: PaymentDetailService, private toastr: ToastrService) { }
+  constructor(
+    private service: PaymentDetailService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.resetForm();
@@ -32,13 +33,43 @@ export class PaymentDetailComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    this.service.postPaymentDetail(form.value).subscribe(
+    if (this.service.formData.PmId === 0) {
+        this.insertRecord(form);
+    } else {
+      this.updateRecord(form);
+    }
+  }
+
+  insertRecord(form: NgForm) {
+    this.service.postPaymentDetail().subscribe(
       res => {
         this.resetForm(form);
-        this.toastr.success('Submitted successfully', 'Payment Detail Register');
+        this.toastr.success(
+          'Submitted successfully',
+          'Payment Detail Register'
+        );
+        this.service.refreshList();
       },
       err => {
         console.log(err);
-      });
+      }
+    );
   }
+
+  updateRecord(form: NgForm) {
+    this.service.putPaymentDetail().subscribe(
+      res => {
+        this.resetForm(form);
+        this.toastr.info(
+          'Submitted successfully',
+          'Payment Detail Register'
+        );
+        this.service.refreshList();
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
 }

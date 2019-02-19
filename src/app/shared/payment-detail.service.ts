@@ -10,11 +10,26 @@ import { HttpClient } from '@angular/common/http';
 export class PaymentDetailService {
   formData: PaymentDetail;
   readonly rootURL = 'http://localhost:51122/api';
+  list: PaymentDetail[];
 
   constructor(private http: HttpClient) { }
 
-  postPaymentDetail(formData: PaymentDetail) {
-    return this.http.post(this.rootURL + '/PaymentDetails', formData);
+  postPaymentDetail() {
+    return this.http.post(this.rootURL + '/PaymentDetails', this.formData);
+  }
+
+  putPaymentDetail() {
+    return this.http.put(this.rootURL + '/PaymentDetails/' + this.formData.PmId, this.formData);
+  }
+
+  deletePaymentDetail(id) {
+    return this.http.delete(this.rootURL + '/PaymentDetails/' + id);
+  }
+
+  refreshList() {
+    this.http.get(this.rootURL + '/PaymentDetails')
+    .toPromise()
+    .then(res => this.list = res as PaymentDetail[]);
   }
 
 }
